@@ -1,0 +1,149 @@
+﻿@model AccountViewModel
+
+@{
+    ViewBag.Title = "Личный кабинет";
+}
+
+<h1>@ViewBag.Title</h1>
+
+<div class="card" style="width: 18rem;">
+    <img class="card-img-top" src="@Model.Avatar" alt="Card image cap">
+    <div class="card-body">
+        <h5 class="card-title">Имя пользователя: @Model.UserName</h5>
+        <p class="card-text">Ваша роль: @Model.Role</p>
+        <p class="card-text">Email: @Model.Email</p>
+        @if (User.IsInRole("Соискатель"))
+        {
+            <p class="card-text">Имя: @Model.Name</p>
+        }
+        else if (User.IsInRole("Компания"))
+        {
+            <p class="card-text">Имя компании: @Model.Name</p>
+        }
+        <p class="card-text">Номер телефона: @Model.Phone</p>
+
+        @if (!User.IsInRole("admin"))
+        {
+            <a role="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal"
+               asp-action="Edit" asp-controller="Account" asp-route-id="@Model.Id">Редактировать</a>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Форма редактирования</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Account" asp-action="Edit" id="edit_form" method="post" EncType="multipart/form-data">
+                    <input asp-for="Id" value="@Model.Id" hidden>
+                    <input asp-for="Avatar" value="@Model.Avatar" hidden>
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <div>
+                        <label asp-for="UserName"></label><br />
+                        <input asp-for="UserName" value="@Model.UserName" />
+                        <span asp-validation-for="UserName"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Email"></label><br />
+                        <input asp-for="Email" value="@Model.Email" />
+                        <span asp-validation-for="Email"></span>
+                    </div>
+
+                    <div>
+                        <label for="radioBtns"></label>Кто вы?<br />
+                        <div id="radioBtns">
+                            @if (Model.Role == "Соискатель")
+                            {
+                                <input type="radio" id="roleChoice1"
+                                       asp-for="Role" value="Соискатель" checked onchange="ChangeLabelRB1()">
+                                <label for="roleChoice1">Соискатель</label>
+                                <input type="radio" id="roleChoice2"
+                                       asp-for="Role" value="Компания" onchange="ChangeLabelRB2()">
+                                <label for="roleChoice2">Компания</label>
+                            }
+                            else if (Model.Role == "Компания")
+                            {
+                                <input type="radio" id="roleChoice1"
+                                       asp-for="Role" value="Соискатель" onchange="ChangeLabelRB1()">
+                                <label for="roleChoice1">Соискатель</label>
+                                <input type="radio" id="roleChoice2"
+                                       asp-for="Role" value="Компания" checked onchange="ChangeLabelRB2()">
+                                <label for="roleChoice2">Компания</label>
+                            }
+                            else
+                            {
+                                <input type="radio" id="roleChoice1"
+                                       asp-for="Role" value="Соискатель" checked onchange="ChangeLabelRB1()">
+                                <label for="roleChoice1">Соискатель</label>
+                                <input type="radio" id="roleChoice2"
+                                       asp-for="Role" value="Компания" onchange="ChangeLabelRB2()">
+                                <label for="roleChoice2">Компания</label>
+                            }
+                        </div>
+                    </div>
+
+                    <div>
+                        @if (Model.Role == "Соискатель")
+                        {
+                            <label class="name">Имя</label>
+                        }
+                        else if (Model.Role == "Компания")
+                        {
+                            <label class="name">Имя компании</label>
+                        }
+                        else
+                        {
+                            <label class="name">Имя</label>
+                        }
+                        <br />
+                        <input asp-for="Name" value="@Model.Name" />
+                        <span asp-validation-for="Name"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Phone"></label><br />
+                        <input asp-for="Phone" value="@Model.Phone" />
+                        <span asp-validation-for="Phone"></span>
+                    </div>
+                    <div>
+                        <label for="uploadImage">Аватар</label><br />
+                        <input type="file" name="uploadImage" id="uploadImage">
+                    </div>
+                    <div>
+                        <label asp-for="Password"></label><br />
+                        <input asp-for="Password" value="@Model.Password" />
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                    <div>
+                        <label asp-for="PasswordConfirm"></label><br />
+                        <input asp-for="PasswordConfirm" value="@Model.PasswordConfirm" />
+                        <span asp-validation-for="PasswordConfirm"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="edit_form" class="btn btn-success">Изменить и закрыть</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+<script>
+    function ChangeLabelRB1() {
+        $('label.name').text('Имя')
+    }
+    function ChangeLabelRB2() {
+        $('label.name').text('Имя комании')
+        }
+</script>
+
+}

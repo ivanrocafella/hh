@@ -21,7 +21,8 @@
                            @if (User.Identity.IsAuthenticated)
                             {    
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="PrivateCabinet">Личный кабинет</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="PrivateCabinet"
+                                       asp-route-name="@User.Identity.Name">Личный кабинет</a>
                                 </li>
                                 <li>
                                     <p>@User.Identity.Name</p>

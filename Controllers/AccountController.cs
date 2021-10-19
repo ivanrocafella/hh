@@ -15,17 +15,19 @@ namespace hh.Controllers
     {
         private readonly UserManager<Account> _userManager;
         private readonly SignInManager<Account> _signInManager;
-        private readonly IAccountService<Account, RegisterViewModel, IFormFile, 
-            LoginViewModel, Microsoft.AspNetCore.Identity.SignInResult> service;
+        private ApplicationContext _context;
+        private readonly IAccountService<Account, IFormFile, 
+            LoginViewModel, Microsoft.AspNetCore.Identity.SignInResult, AccountViewModel, RegisterViewModel> service;
 
         public AccountController(UserManager<Account> userManager,
             SignInManager<Account> signInManager,
-            IAccountService<Account, RegisterViewModel, IFormFile, LoginViewModel,
-                Microsoft.AspNetCore.Identity.SignInResult> service)
+            IAccountService<Account, IFormFile, LoginViewModel,
+                Microsoft.AspNetCore.Identity.SignInResult, AccountViewModel, RegisterViewModel> service, ApplicationContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             this.service = service;
+            _context = context;
         }
 
         [HttpGet]
@@ -39,7 +41,7 @@ namespace hh.Controllers
         {
             if (ModelState.IsValid)
             {
-                Account account = await service.MakeUser(registerView, uploadImage);
+                Account account = await service.MakeUserForReg(registerView, uploadImage);
                 var result = await _userManager.CreateAsync(account, registerView.Password);
                 if (result.Succeeded)
                 {
@@ -82,6 +84,31 @@ namespace hh.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PrivateCabinet(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                AccountViewModel accountView = await service.GetUserbyName(name);
+                if (accountView != null)
+                    return View(accountView);
+                else
+                    return RedirectToAction("Index", "Home");
+            }
+            else
+                return NotFound();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(AccountViewModel accountView, IFormFile uploadImage)
+        {
+            Account account = await service.MakeUserForEdit(accountView, uploadImage);
+            _context.Accounts.Update(account);
+            _context.SaveChanges();
+            return RedirectToAction("PrivateCabinet", new { name = account.UserName });
         }
     }
 }
