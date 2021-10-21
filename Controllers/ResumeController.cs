@@ -32,5 +32,32 @@ namespace hh.Controllers
             Account account = await _Aservice.GetAccountAsyncById(resume.AccountId);
             return RedirectToAction("PrivateCabinet", "Account", new { name = account.UserName });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Update(int id)
+        {
+            Resume resume = await _Rservice.Update(id);
+            Account account = await _Aservice.GetAccountAsyncById(resume.AccountId);
+            return RedirectToAction("PrivateCabinet", "Account", new { name = account.UserName });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Detail(int id) => View(await _Rservice.GetResume(id));
+
+        [HttpPost]
+        public async Task<IActionResult> AddJob(Job job)
+        {
+            await _Rservice.MakeJob(job);
+            return RedirectToAction("Detail", new { id = job.ResumeId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddEduc(Education education)
+        {
+            await _Rservice.MakeEduc(education);
+            return RedirectToAction("Detail", new { id = education.ResumeId });
+        }
+
+        
     }
 }

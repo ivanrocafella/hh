@@ -1,4 +1,5 @@
 ﻿using hh.Models;
+using hh.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -30,5 +31,50 @@ namespace hh.Services
             await _context.Resumes.AddAsync(resume);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<ResumeViewModel> GetResume(int id)
+        {
+            Resume resume = await _context.Resumes.Include(e => e.Educations)
+                .Include(e => e.Jobs).Include(e => e.Account).FirstOrDefaultAsync(e => e.Id == id);
+            List<Job> jobs = await _context.Jobs.Where(e => e.ResumeId == resume.Id).ToListAsync();
+            List<Education> educations = await _context.Educations.Where(e => e.ResumeId == resume.Id).ToListAsync();
+            ResumeViewModel resumeView = new ResumeViewModel
+            {
+                Resume = resume,
+                Educations = educations,
+                Jobs = jobs
+            };
+            return resumeView;  
+        }
+
+        public async Task MakeJob(Job job)
+        {
+            await _context.Jobs.AddAsync(job);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task MakeEduc(Education education)
+        {
+            await _context.Educations.AddAsync(education);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Resume> Update(int id)
+        {
+            Resume resume = await _context.Resumes.FirstOrDefaultAsync(e => e.Id == id);
+            resume.DateTimeUpdate = DateTime.Now;
+            _context.Resumes.Update(resume);
+            await _context.SaveChangesAsync();
+            return resume;
+        }
+
+       // public async Task<Resume> Set(int id)
+       // {
+       //     Resume resume = await _context.Resumes.FirstOrDefaultAsync(e => e.Id == id);
+       //     resume.DateTimeUpdate = DateTime.Now;
+       //     _context.Resumes.Update(resume);
+       //     await _context.SaveChangesAsync();
+       //     return resume;
+       // }
     }
 }

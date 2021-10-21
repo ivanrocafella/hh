@@ -1,0 +1,186 @@
+﻿@model ResumeViewModel
+
+@{
+    ViewBag.Title = "Резюме";
+}
+
+<h1>@ViewBag.Title</h1>
+<div class="card text-center mt-1 mb-1">
+    <div class="card-header">
+        #id: @Model.Resume.Id
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Позиция: @Model.Resume.Id</h5>
+        <h5 class="card-title">Категория: @Model.Resume.CategoryName</h5>
+        <p class="card-text">Зарплата: @Model.Resume.Salary</p>
+        <p class="card-text">Email: <a href="http://mailto:@Model.Resume.Account.Email">@Model.Resume.Account.Email</a></p>
+        <p class="card-text">Telegram: <a href="http://t.me/@Model.Resume.Account.Telegram.Substring(1)">@Model.Resume.Account.Telegram</a></p>
+        <p class="card-text">Номер телефона: @Model.Resume.Account.PhoneNumber</p>
+    </div>
+    @if (Model.Resume.DateTimeUpdate > DateTime.MinValue)
+    {
+        <div class="card-footer text-muted">
+            Дата обновления: @Model.Resume.DateTimeUpdate
+        </div>
+    }
+    <div class="card-footer text-muted">
+        Дата создания: @Model.Resume.DateTimeCreate
+    </div>
+    <div class="card-body mt-3 mb-3">
+        <h3>Опыт работы</h3>
+        @if (Model.Jobs.Count == 0)
+        {
+            <p>Мест работы нет</p>
+        }
+        else
+        {
+            foreach (var item in Model.Jobs)
+            {
+                <div class="card text-center mt-1 mb-1">
+                    <div class="card-header">
+                        Название компании: @item.Name
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Позциия: @item.Position</h5>
+                        <h5 class="card-title">Обязанности: @item.Duty</h5>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Дата начала: @item.DateStart
+                    </div>
+                     <div class="card-footer text-muted">
+                        Дата завершения: @item.DateEnd
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="card-body mt-3 mb-3">
+        <h3>Образование</h3>
+        @if (Model.Educations.Count == 0)
+        {
+            <p>Мест обучения нет</p>
+        }
+        else
+        {
+            foreach (var item in Model.Educations)
+            {
+                <div class="card text-center mt-1 mb-1">
+                    <div class="card-header">
+                        Название учебного заведения: @item.Name
+                    </div>
+                    <div class="card-footer text-muted">
+                        Дата начала: @item.DateStart
+                    </div>
+                    <div class="card-footer text-muted">
+                        Дата завершения: @item.DateEnd
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#make_job">
+    Добавить место работы
+</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#make_educ">
+    Добавить место учёбы
+</button>
+
+
+<div class="modal fade" id="make_job" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Форма добавления места работы</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Resume" asp-action="AddJob" id="add_form_job" method="post">
+                    <input asp-for="Job.ResumeId" value="@Model.Resume.Id" hidden>
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <div>
+                        <label asp-for="Job.Name"></label><br />
+                        <input asp-for="Job.Name" />
+                        <span asp-validation-for="Job.Name"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Job.Position"></label><br />
+                        <textarea asp-for="Job.Position" cols="30" rows="2"></textarea>
+                        <span asp-validation-for="Job.Position"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Job.Duty"></label><br />
+                        <input asp-for="Job.Duty" />
+                        <span asp-validation-for="Job.Duty"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Job.DateStart"></label><br />
+                        <input asp-for="Job.DateStart" />
+                    </div>
+                    <div>
+                        <label asp-for="Job.DateEnd"></label><br />
+                        <input asp-for="Job.DateEnd" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="add_form_job" class="btn btn-secondary">Добавить и закрыть</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="make_educ" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Форма добавления места учёбы</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Resume" asp-action="AddEduc" id="add_form_educ" method="post">
+                    <input asp-for="Education.ResumeId" value="@Model.Resume.Id" hidden>
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <div>
+                        <label asp-for="Education.Name"></label><br />
+                        <input asp-for="Education.Name" />
+                        <span asp-validation-for="Education.Name"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Education.DateStart"></label><br />
+                        <input asp-for="Education.DateStart" />
+                    </div>
+                    <div>
+                        <label asp-for="Education.DateEnd"></label><br />
+                        <input asp-for="Education.DateEnd" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="add_form_educ" class="btn btn-secondary">Добавить и закрыть</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+@section scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
