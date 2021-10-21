@@ -10,7 +10,7 @@ using hh.Models;
 namespace hh.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20211021101650_initial")]
+    [Migration("20211021174938_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -259,6 +259,7 @@ namespace hh.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ResumeId")
@@ -290,12 +291,15 @@ namespace hh.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Duty")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Position")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ResumeId")
@@ -344,6 +348,9 @@ namespace hh.Migrations
 
                     b.Property<int>("Salary")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("Set")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Telegram")
                         .HasColumnType("text");

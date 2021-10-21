@@ -68,13 +68,20 @@ namespace hh.Services
             return resume;
         }
 
-       // public async Task<Resume> Set(int id)
-       // {
-       //     Resume resume = await _context.Resumes.FirstOrDefaultAsync(e => e.Id == id);
-       //     resume.DateTimeUpdate = DateTime.Now;
-       //     _context.Resumes.Update(resume);
-       //     await _context.SaveChangesAsync();
-       //     return resume;
-       // }
+        public async Task Set(int id)
+        {
+            Resume resume = await _context.Resumes.FirstOrDefaultAsync(e => e.Id == id);
+            resume.Set = true;
+            _context.Resumes.Update(resume);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SetOff(int id)
+        {
+            Resume resume = await _context.Resumes.FirstOrDefaultAsync(e => e.Id == id);
+            resume.Set = false;
+            _context.Resumes.Update(resume);
+            await _context.SaveChangesAsync();
+        }
     }
 }

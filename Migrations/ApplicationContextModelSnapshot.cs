@@ -257,6 +257,7 @@ namespace hh.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ResumeId")
@@ -288,12 +289,15 @@ namespace hh.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Duty")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Position")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ResumeId")
@@ -342,6 +346,9 @@ namespace hh.Migrations
 
                     b.Property<int>("Salary")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("Set")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Telegram")
                         .HasColumnType("text");

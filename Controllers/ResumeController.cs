@@ -58,6 +58,20 @@ namespace hh.Controllers
             return RedirectToAction("Detail", new { id = education.ResumeId });
         }
 
-        
+        [HttpGet]
+        public async Task<IActionResult> Set(int id)
+        {
+            await _Rservice.Set(id);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SetOff(int id)
+        {
+            await _Rservice.SetOff(id);
+            return RedirectToAction("Index", "Home");
+        }
+
+
     }
 }

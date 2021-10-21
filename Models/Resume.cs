@@ -20,6 +20,7 @@ namespace hh.Models
         public string Email { get; set; }
         public string Telegram { get; set; }
         public string Phone { get; set; }
+        public bool Set { get; set; }
         public DateTime DateTimeCreate { get; set; }
         public DateTime DateTimeUpdate { get; set; }
 
@@ -35,6 +36,7 @@ namespace hh.Models
             DateTimeCreate = DateTime.Now;
             Jobs = new List<Job>();
             Educations = new List<Education>();
+            Set = false;
         }
     }
 }

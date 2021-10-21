@@ -41,24 +41,26 @@
         {
             <a style="display:block" asp-controller="Resume" asp-action="Detail" asp-route-id="@item.Id">
                 <div class="card text-center mt-1 mb-1">
-                <div class="card-header">
-                    #id: @item.Id
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">@item.Position в @item.CategoryName</h5>
-                </div>
-                @if (item.DateTimeUpdate>DateTime.MinValue)
-                {
-                <div class="card-footer text-muted">
-                    Дата обновления: @item.DateTimeUpdate
-                </div>
-                }            
-                <div class="card-footer text-muted">
-                    Дата создания: @item.DateTimeCreate
-                </div>
+                    <div class="card-header">
+                        #id: @item.Id
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Position в @item.CategoryName</h5>
+                    </div>
+                    @if (item.DateTimeUpdate > DateTime.MinValue)
+                    {
+                        <div class="card-footer text-muted">
+                            Дата обновления: @item.DateTimeUpdate
+                        </div>
+                    }
+                    <div class="card-footer text-muted">
+                        Дата создания: @item.DateTimeCreate
+                    </div>
                 </div>
             </a>
             <a role="button" class="btn btn-success" asp-action="Update" asp-controller="Resume" asp-route-id="@item.Id">Обновить</a>
+            <a role="button" class="btn btn-success" asp-action="Set" asp-controller="Resume" asp-route-id="@item.Id">Опубликовать</a>
+            <a role="button" class="btn btn-success" asp-action="SetOff" asp-controller="Resume" asp-route-id="@item.Id">Снять с публикации</a>
         }
     }
 </div>

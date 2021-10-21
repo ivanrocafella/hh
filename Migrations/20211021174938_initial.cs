@@ -182,6 +182,7 @@ namespace hh.Migrations
                     Email = table.Column<string>(type: "text", nullable: true),
                     Telegram = table.Column<string>(type: "text", nullable: true),
                     Phone = table.Column<string>(type: "text", nullable: true),
+                    Set = table.Column<bool>(type: "boolean", nullable: false),
                     DateTimeCreate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DateTimeUpdate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     AccountId = table.Column<string>(type: "text", nullable: true),
@@ -210,7 +211,7 @@ namespace hh.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     DateStart = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DateEnd = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     AccountId = table.Column<string>(type: "text", nullable: true),
@@ -239,9 +240,9 @@ namespace hh.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Position = table.Column<string>(type: "text", nullable: true),
-                    Duty = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Position = table.Column<string>(type: "text", nullable: false),
+                    Duty = table.Column<string>(type: "text", nullable: false),
                     DateStart = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DateEnd = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     AccountId = table.Column<string>(type: "text", nullable: true),
