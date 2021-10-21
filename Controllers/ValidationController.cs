@@ -30,5 +30,8 @@ namespace hh.Controllers
             accounts.Remove(curAccount);
             return !accounts.Any(e => e.UserName == UserName || e.Email == Email);
         }
+
+        [AcceptVerbs("GET", "POST")]
+        public bool CheckExistAccountForLogin(string EmailLogin) => _context.Accounts.Any(e => e.UserName == EmailLogin || e.Email == EmailLogin);
     }
 }

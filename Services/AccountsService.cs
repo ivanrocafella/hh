@@ -68,6 +68,7 @@ namespace hh.Services
            account.UserName = accountView.UserName;
            account.Avatar = pathImage;
            account.Role = accountView.Role;
+           account.Telegram = accountView.Telegram;
            account.Name = accountView.Name;
            account.PhoneNumber = accountView.Phone;
             return account;
@@ -92,6 +93,7 @@ namespace hh.Services
                 UserName = registerView.UserName,
                 Avatar = pathImage,
                 Role = registerView.Role,
+                Telegram = registerView.Telegram,
                 Name = registerView.Name,
                 PhoneNumber = registerView.Phone
             };
@@ -100,7 +102,8 @@ namespace hh.Services
 
         public async Task<AccountViewModel> GetUserbyName(string name)
         {
-            Account account = await _context.Accounts.FirstOrDefaultAsync(e => e.UserName == name);
+            Account account = await _context.Accounts.Include(e=>e.Resumes).
+                FirstOrDefaultAsync(e => e.UserName == name);
             AccountViewModel accountViewModel = new AccountViewModel
             {
                 Id = account.Id,
@@ -109,11 +112,18 @@ namespace hh.Services
                 Role = account.Role,
                 Name = account.Name,
                 Phone = account.PhoneNumber,
+                Telegram = account.Telegram,
                 Avatar = account.Avatar,
                 Password = account.PasswordHash,
-                PasswordConfirm = account.PasswordHash
+                PasswordConfirm = account.PasswordHash,
+                Resumes = await _context.Resumes.
+                Where(e => e.AccountId == account.Id).ToListAsync()
             };
             return accountViewModel;
         }
+
+        public async Task<Account> GetAccountAsyncById(string id) =>
+            await  _context.Accounts.FirstOrDefaultAsync(e => e.Id == id);
+ 
     }
 }

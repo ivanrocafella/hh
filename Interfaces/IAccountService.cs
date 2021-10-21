@@ -11,5 +11,6 @@ namespace hh.Interfaces
         Task<T> MakeUserForEdit(M m, V v);
         Task<S> TakeLoginEmail(L l);
         Task<M> GetUserbyName(string name);
+        Task<T> GetAccountAsyncById(string id);
     }
 }

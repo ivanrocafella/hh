@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace hh.ViewModels
     {
         [Required(ErrorMessage = "Введите email или логин")]
         [Display(Name = "Email или Логин")]
+        [Remote(action: "CheckExistAccountForLogin", controller: "Validation", ErrorMessage = "Такой пользователя нет")]
         public string EmailLogin { get; set; }
         [Required(ErrorMessage = "Введите пароль")]
         [DataType(DataType.Password)]

@@ -28,6 +28,9 @@ namespace hh.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     Avatar = table.Column<string>(type: "text", nullable: true),
+                    Role = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Telegram = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -46,6 +49,19 @@ namespace hh.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -154,6 +170,100 @@ namespace hh.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Resumes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CategoryName = table.Column<string>(type: "text", nullable: true),
+                    Position = table.Column<string>(type: "text", nullable: false),
+                    Salary = table.Column<int>(type: "integer", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: true),
+                    Telegram = table.Column<string>(type: "text", nullable: true),
+                    Phone = table.Column<string>(type: "text", nullable: true),
+                    DateTimeCreate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DateTimeUpdate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    AccountId = table.Column<string>(type: "text", nullable: true),
+                    CategoryId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Resumes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Resumes_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Resumes_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Educations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    DateStart = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DateEnd = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    AccountId = table.Column<string>(type: "text", nullable: true),
+                    ResumeId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Educations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Educations_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Educations_Resumes_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resumes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Jobs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Position = table.Column<string>(type: "text", nullable: true),
+                    Duty = table.Column<string>(type: "text", nullable: true),
+                    DateStart = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DateEnd = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    AccountId = table.Column<string>(type: "text", nullable: true),
+                    ResumeId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Jobs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Jobs_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Jobs_Resumes_ResumeId",
+                        column: x => x.ResumeId,
+                        principalTable: "Resumes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -190,6 +300,36 @@ namespace hh.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Educations_AccountId",
+                table: "Educations",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Educations_ResumeId",
+                table: "Educations",
+                column: "ResumeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Jobs_AccountId",
+                table: "Jobs",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Jobs_ResumeId",
+                table: "Jobs",
+                column: "ResumeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Resumes_AccountId",
+                table: "Resumes",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Resumes_CategoryId",
+                table: "Resumes",
+                column: "CategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -210,10 +350,22 @@ namespace hh.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Educations");
+
+            migrationBuilder.DropTable(
+                name: "Jobs");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Resumes");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

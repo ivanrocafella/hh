@@ -40,5 +40,9 @@ namespace hh.ViewModels
         [DataType(DataType.Password)]
         [Display(Name = "Подтвердить пароль")]
         public string PasswordConfirm { get; set; }
+
+        [Required(ErrorMessage = "Укажите telegram")]
+        [RegularExpression(@"^@\w*", ErrorMessage = "Логин telegram должен начинаться с @")]
+        public string Telegram { get; set; }
     }
 }

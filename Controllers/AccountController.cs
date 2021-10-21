@@ -4,6 +4,7 @@ using hh.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,7 +94,10 @@ namespace hh.Controllers
             {
                 AccountViewModel accountView = await service.GetUserbyName(name);
                 if (accountView != null)
+                {
+                    ViewBag.Categories = await _context.Categories.ToListAsync();
                     return View(accountView);
+                }                   
                 else
                     return RedirectToAction("Index", "Home");
             }
@@ -110,5 +114,6 @@ namespace hh.Controllers
             _context.SaveChanges();
             return RedirectToAction("PrivateCabinet", new { name = account.UserName });
         }
+
     }
 }

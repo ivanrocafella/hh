@@ -1,17 +1,18 @@
 ﻿@model AccountViewModel
 
 @{
-    ViewBag.Title = "Личный кабинет";
+    ViewBag.Title1 = "Личный кабинет";
+    ViewBag.Title2 = "Ваши резюме";
 }
 
-<h1>@ViewBag.Title</h1>
+<h1>@ViewBag.Title1</h1>
 
 <div class="card" style="width: 18rem;">
     <img class="card-img-top" src="@Model.Avatar" alt="Card image cap">
     <div class="card-body">
         <h5 class="card-title">Имя пользователя: @Model.UserName</h5>
         <p class="card-text">Ваша роль: @Model.Role</p>
-        <p class="card-text">Email: @Model.Email</p>
+        <p class="card-text">Email: <a href="http://mailto:@Model.Email">@Model.Email</a></p>
         @if (User.IsInRole("Соискатель"))
         {
             <p class="card-text">Имя: @Model.Name</p>
@@ -21,16 +22,47 @@
             <p class="card-text">Имя компании: @Model.Name</p>
         }
         <p class="card-text">Номер телефона: @Model.Phone</p>
-
-        @if (!User.IsInRole("admin"))
-        {
-            <a role="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal"
-               asp-action="Edit" asp-controller="Account" asp-route-id="@Model.Id">Редактировать</a>
-        }
+        <p class="card-text">Telegram: <a href="http://t.me/@Model.Telegram.Substring(1)">@Model.Telegram</a></p>
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#accountViewModal">Редактировать</button>
     </div>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<h1>@ViewBag.Title2</h1>
+
+<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#make_resume">Добавить резюме</button>
+<div class="resumes_section">
+    @if (Model.Resumes.Count == 0)
+    {
+        <p>Резюме ещё нет</p>
+    }
+    else
+    {
+        foreach (var item in Model.Resumes)
+        {
+            <div class="card text-center mt-1 mb-1">
+                <div class="card-header">
+                    #id: @item.Id
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@item.Position в @item.CategoryName</h5>
+                </div>
+                @if (item.DateTimeUpdate>DateTime.MinValue)
+                {
+                <div class="card-footer text-muted">
+                    Дата обновления: @item.DateTimeUpdate
+                </div>
+                }            
+                <div class="card-footer text-muted">
+                    Дата создания: @item.DateTimeCreate
+                </div>
+            </div>
+        }
+    }
+</div>
+
+
+
+<div class="modal fade" id="accountViewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -111,6 +143,11 @@
                         <span asp-validation-for="Phone"></span>
                     </div>
                     <div>
+                        <label asp-for="Telegram"></label><br />
+                        <input asp-for="Telegram" />
+                        <span asp-validation-for="Telegram"></span>
+                    </div>
+                    <div>
                         <label for="uploadImage">Аватар</label><br />
                         <input type="file" name="uploadImage" id="uploadImage">
                     </div>
@@ -133,6 +170,50 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="make_resume" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Форма редактирования</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="Resume" asp-action="Add" id="add_form" method="post">
+                    <input asp-for="Resume.AccountId" value="@Model.Id" hidden>
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <div>
+                        <select asp-for="Resume.CategoryName">
+                            <option selected>Без категории</option>
+                            @foreach (var item in ViewBag.Categories)
+                            {
+                                <option value="@item.Name">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label asp-for="Resume.Position"></label><br />
+                        <input asp-for="Resume.Position" />
+                        <span asp-validation-for="Resume.Position"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Resume.Salary"></label><br />
+                        <input asp-for="Resume.Salary" />
+                        <span asp-validation-for="Resume.Salary"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="add_form" class="btn btn-success">Добавить и закрыть</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section scripts{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

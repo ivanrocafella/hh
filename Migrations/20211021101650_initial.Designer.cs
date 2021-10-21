@@ -10,8 +10,8 @@ using hh.Models;
 namespace hh.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20211018132546_addFieldRole")]
-    partial class addFieldRole
+    [Migration("20211021101650_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -179,6 +179,9 @@ namespace hh.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -196,7 +199,13 @@ namespace hh.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Role")
+                        .HasColumnType("text");
+
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Telegram")
                         .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -216,6 +225,136 @@ namespace hh.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("hh.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("hh.Models.Education", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("AccountId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DateEnd")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateStart")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("ResumeId");
+
+                    b.ToTable("Educations");
+                });
+
+            modelBuilder.Entity("hh.Models.Job", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("AccountId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DateEnd")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateStart")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Duty")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ResumeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("ResumeId");
+
+                    b.ToTable("Jobs");
+                });
+
+            modelBuilder.Entity("hh.Models.Resume", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("AccountId")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DateTimeCreate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateTimeUpdate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Salary")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Telegram")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Resumes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -267,6 +406,72 @@ namespace hh.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("hh.Models.Education", b =>
+                {
+                    b.HasOne("hh.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("hh.Models.Resume", "Resume")
+                        .WithMany("Educations")
+                        .HasForeignKey("ResumeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Resume");
+                });
+
+            modelBuilder.Entity("hh.Models.Job", b =>
+                {
+                    b.HasOne("hh.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("hh.Models.Resume", "Resume")
+                        .WithMany("Jobs")
+                        .HasForeignKey("ResumeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Resume");
+                });
+
+            modelBuilder.Entity("hh.Models.Resume", b =>
+                {
+                    b.HasOne("hh.Models.Account", "Account")
+                        .WithMany("Resumes")
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("hh.Models.Category", "Category")
+                        .WithMany("Resumes")
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("hh.Models.Account", b =>
+                {
+                    b.Navigation("Resumes");
+                });
+
+            modelBuilder.Entity("hh.Models.Category", b =>
+                {
+                    b.Navigation("Resumes");
+                });
+
+            modelBuilder.Entity("hh.Models.Resume", b =>
+                {
+                    b.Navigation("Educations");
+
+                    b.Navigation("Jobs");
                 });
 #pragma warning restore 612, 618
         }

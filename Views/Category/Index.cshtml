@@ -1,0 +1,92 @@
+﻿@model CategoryAndCategories
+
+@{
+    ViewBag.Title = "Категории";
+    Layout = "_Layout";
+}
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#categModal">Добавить категорию</button>
+<h2>@ViewBag.Title</h2>
+<div class="table_section">
+    @if (@Model.Categories.Count == 0)
+    {
+        <p>Категорий ещё нет</p>
+    }
+    else
+    {
+        <table class="table_categ table table-bordered table-dark" style="width: 100%;">
+            <tr>
+                <th>Id</th>
+                <th>Название</th>
+            </tr>
+            @{ int count = 1;}
+            @foreach (var item in @Model.Categories)
+            {
+                <tr class="categ" id="category_@count">
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                </tr>
+                count++;
+            }
+        </table>
+    }
+</div>
+
+<div class="modal fade" id="categModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Форма добавления категории</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <div id="categ_div_form">
+                        <label asp-for="Category.Name"></label><br />
+                        <input id="categ_name" asp-for="Category.Name" />
+                        <span asp-validation-for="Category.Name"></span>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="AddCateg()" >Добавить</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+<script>
+    var categs = [];
+    let lastCategId;
+    
+
+    let htmlCateg = 
+        '<tr class="categ">' +
+        '<td class="ext_id"></td>' +
+        '<td class="ext_name"></td>' +
+        '</tr>';
+
+
+
+        
+    function AddCateg() {
+        $.post('@Url.Action("AddCategory", "Category")',
+            { name: $('#categ_name').val() },
+            function (response) {
+                console.log(response)
+                $('.table_categ').append(htmlCateg)
+                let categs = $('.categ')
+                lastCategId = 'category_' + categs.length
+                categs[categs.length - 1].setAttribute('id', 'category_' + categs.length)
+                $('#' + lastCategId + ' .ext_id').text(response.categoryToJs.id)
+                $('#' + lastCategId + ' .ext_name').text(response.categoryToJs.name)
+            }
+        )
+    }
+</script>
+
+}

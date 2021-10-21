@@ -19,11 +19,20 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav mr-0">
                            @if (User.Identity.IsAuthenticated)
-                            {    
+                           {
+                               @if (!User.IsInRole("admin"))
+                               {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="PrivateCabinet"
                                        asp-route-name="@User.Identity.Name">Личный кабинет</a>
                                 </li>
+                               }                           
+                                @if (User.IsInRole("admin"))
+                                { 
+                                  <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Категории</a>
+                                </li>
+                                }
                                 <li>
                                     <p>@User.Identity.Name</p>
                                     <form method="post" asp-controller="Account" asp-action="LogOut">
@@ -35,7 +44,7 @@
                             {                               
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Вход</a>
-                                </li>
+                                </li>                               
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Регистрация</a>
                                 </li>

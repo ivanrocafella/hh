@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using hh.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -53,5 +54,13 @@ namespace hh.ViewModels
 
         [JsonPropertyName("avatar")]
         public string Avatar { get; set; }
+
+        [JsonPropertyName("telegram")]
+        [Required(ErrorMessage = "Укажите telegram")]
+        [RegularExpression(@"^@\w*", ErrorMessage = "Логин telegram должен начинаться с @")]
+        public string Telegram { get; set; }
+
+        public List<Resume> Resumes { get; set; }
+        public Resume Resume { get; set; }
     }
 }

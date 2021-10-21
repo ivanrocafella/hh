@@ -36,6 +36,8 @@ namespace hh
             services.AddControllersWithViews();
             services.AddTransient<IAccountService<Account, IFormFile, LoginViewModel,
                                   SignInResult, AccountViewModel, RegisterViewModel>, AccountsService>();
+            services.AddTransient<CategoriesService>();
+            services.AddTransient<ResumesService>();
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection))
                 .AddIdentity<Account, IdentityRole>(options =>

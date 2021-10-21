@@ -11,5 +11,13 @@ namespace hh.Models
         public string Avatar { get; set; }
         public string Role { get; set; }
         public string Name { get; set; }
+        public string Telegram { get; set; }
+
+        public List<Resume> Resumes { get; set; }
+
+        public Account()
+        {
+            Resumes = new List<Resume>();
+        }
     }
 }
