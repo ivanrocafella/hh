@@ -5,6 +5,8 @@
     ViewBag.Title2 = "Список вакансий";
 }
 
+@if (User.IsInRole("Соискатель") && ViewBag.BoolSet)
+{
 <div class="resumes_section">
     <h1>@ViewBag.Title1</h1>
     @if (Model.Resumes.Count == 0)
@@ -14,37 +16,6 @@
     else
     {
         foreach (var item in Model.Resumes)
-        {
-          <div class="card text-center mt-1 mb-1">
-              <div class="card-header">
-                  #id: @item.Id
-              </div>
-              <div class="card-body">
-                  <h5 class="card-title">@item.Position в @item.CategoryName</h5>
-              </div>
-              @if (item.DateTimeUpdate > DateTime.MinValue)
-              {
-                  <div class="card-footer text-muted">
-                      Дата обновления: @item.DateTimeUpdate
-                  </div>
-              }
-              <div class="card-footer text-muted">
-                  Дата создания: @item.DateTimeCreate
-              </div>
-          </div>
-        }
-    }
-</div>
-
-<div class="resumes_section">
-    <h1>@ViewBag.Title2</h1>
-    @if (Model.Vacancies.Count == 0)
-    {
-        <p>Нет опубликованных вакансий</p>
-    }
-    else
-    {
-        foreach (var item in Model.Vacancies)
         {
             <div class="card text-center mt-1 mb-1">
                 <div class="card-header">
@@ -66,3 +37,47 @@
         }
     }
 </div>
+}
+
+
+@if (User.IsInRole("Соискатель") && ViewBag.Bool)
+{
+<div class="resumes_section">
+    <h1>@ViewBag.Title2</h1>
+    @if (Model.Vacancies.Count == 0)
+    {
+        <p>Нет опубликованных вакансий</p>
+    }
+    else
+    {
+        foreach (var item in Model.Vacancies)
+        {
+            <div class="card text-center mt-1 mb-1">
+                <div class="card-header">
+                    #id: @item.Id
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@item.Position в @item.CategoryName</h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Зарплата: @item.Salary USD</h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                    <a asp-controller="Account" asp-action="PageCompany"
+                    asp-route-id="@item.AccountId">Ссылка на профиль компании</a></h5>
+                </div>
+                @if (item.DateTimeUpdate > DateTime.MinValue)
+                {
+                    <div class="card-footer text-muted">
+                        Дата обновления: @item.DateTimeUpdate
+                    </div>
+                }
+                <div class="card-footer text-muted">
+                    Дата создания: @item.DateTimeCreate
+                </div>
+            </div>
+        }
+    }
+</div>
+}

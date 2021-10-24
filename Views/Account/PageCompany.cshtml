@@ -1,0 +1,19 @@
+﻿@model Account
+
+@{
+    ViewBag.Title = "Профиль компании";
+}
+
+<h1>@ViewBag.Title1</h1>
+
+<div class="card" style="width: 18rem;">
+    <img class="card-img-top" src="@Model.Avatar" alt="Card image cap">
+    <div class="card-body">
+        <h5 class="card-title">Имя пользователя: @Model.UserName</h5>
+        <p class="card-text">Ваша роль: @Model.Role</p>
+        <p class="card-text">Email: <a href="http://mailto:@Model.Email">@Model.Email</a></p>
+        <p class="card-text">Имя компании: @Model.Name</p>
+        <p class="card-text">Номер телефона: @Model.PhoneNumber</p>
+        <p class="card-text">Telegram: <a href="http://t.me/@Model.Telegram.Substring(1)">@Model.Telegram</a></p>
+    </div>
+</div>

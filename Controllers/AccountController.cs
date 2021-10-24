@@ -114,5 +114,9 @@ namespace hh.Controllers
             _context.SaveChanges();
             return RedirectToAction("PrivateCabinet", new { name = account.UserName });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> PageCompany(string id) =>
+            View(await service.GetAccountAsyncById(id)); 
     }
 }

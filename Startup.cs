@@ -38,7 +38,6 @@ namespace hh
                                   SignInResult, AccountViewModel, RegisterViewModel>, AccountsService>();
             services.AddTransient<CategoriesService>();
             services.AddTransient<ResumesService>();
-            services.AddTransient<HomeService>();
             services.AddTransient<VacanciesService>();
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection))

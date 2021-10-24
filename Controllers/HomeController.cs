@@ -1,7 +1,10 @@
 ﻿using hh.Models;
 using hh.Services;
+using hh.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,16 +18,51 @@ namespace hh.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly HomeService _service;
+        private readonly UserManager<Account> _userManager;
+        private ApplicationContext _context;
 
-        public HomeController(ILogger<HomeController> logger, HomeService service)
+        public HomeController(ILogger<HomeController> logger,
+            UserManager<Account> userManager, ApplicationContext context)
         {
             _logger = logger;
-            _service = service;
+            _userManager = userManager;
+            _context = context;
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index() => View(await _service.GetAll());
+        public async Task<IActionResult> Index()
+        {
+            Account account = await _userManager.GetUserAsync(HttpContext.User);
+            List<Resume> resumes = await _context.Resumes.Where(e => e.Set == true && e.AccountId == account.Id)
+               .OrderByDescending(e => e.DateTimeUpdate).ToListAsync();
+            List<Vacancy> vacancies = await _context.Vacancies.Where(e => e.Set == true)
+                  .OrderByDescending(e => e.DateTimeUpdate).ToListAsync();
+            Account AccountFromContext = await _context.Accounts.Include(e => e.Resumes)
+                              .FirstOrDefaultAsync(e => e.Id == account.Id);
+            ResumeVacancyViewModel resumeVacancy = new ResumeVacancyViewModel
+            {
+                Resumes = resumes,
+                Vacancies = vacancies
+            };          
+            bool Bool;
+            bool BoolSet = false;
+            if (AccountFromContext.Resumes.Count > 0)
+                Bool = true;
+            else
+                Bool = false;
+            int i = 0;
+            foreach (var item in resumes)
+            {
+                if (item.AccountId == account.Id)
+                    i++;
+                if (i > 0)
+                    BoolSet = true;
+            }
+            ViewBag.Bool = Bool;
+            ViewBag.BoolSet = BoolSet;
+            return View(resumeVacancy);
+        }
+          
 
 
     }

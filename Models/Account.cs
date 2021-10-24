@@ -14,10 +14,12 @@ namespace hh.Models
         public string Telegram { get; set; }
 
         public List<Resume> Resumes { get; set; }
+        public List<Vacancy> Vacancies { get; set; }
 
         public Account()
         {
             Resumes = new List<Resume>();
+            Vacancies = new List<Vacancy>();
         }
     }
 }
