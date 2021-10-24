@@ -114,6 +114,5 @@ namespace hh.Controllers
             _context.SaveChanges();
             return RedirectToAction("PrivateCabinet", new { name = account.UserName });
         }
-
     }
 }

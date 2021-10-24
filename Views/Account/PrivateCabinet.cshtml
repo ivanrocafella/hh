@@ -23,7 +23,6 @@
         }
         <p class="card-text">Номер телефона: @Model.Phone</p>
         <p class="card-text">Telegram: <a href="http://t.me/@Model.Telegram.Substring(1)">@Model.Telegram</a></p>
-        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#accountViewModal">Редактировать</button>
     </div>
 </div>
 
@@ -58,6 +57,7 @@
                     </div>
                 </div>
             </a>
+            <a role="button" class="btn btn-success" asp-action="Edit" asp-controller="Resume" asp-route-id="@item.Id">Редактировать</a>
             <a role="button" class="btn btn-success" asp-action="Update" asp-controller="Resume" asp-route-id="@item.Id">Обновить</a>
             <a role="button" class="btn btn-success" asp-action="Set" asp-controller="Resume" asp-route-id="@item.Id">Опубликовать</a>
             <a role="button" class="btn btn-success" asp-action="SetOff" asp-controller="Resume" asp-route-id="@item.Id">Снять с публикации</a>
@@ -192,7 +192,7 @@
                     <div asp-validation-summary="ModelOnly"></div>
                     <div>
                         <select asp-for="Resume.CategoryName">
-                            <option selected>Без категории</option>
+                            <option selected>Выберите категорию</option>
                             @foreach (var item in ViewBag.Categories)
                             {
                                 <option value="@item.Name">@item.Name</option>
@@ -206,7 +206,7 @@
                     </div>
                     <div>
                         <label asp-for="Resume.Salary"></label><br />
-                        <input asp-for="Resume.Salary" />
+                        <input asp-for="Resume.Salary"/>
                         <span asp-validation-for="Resume.Salary"></span>
                     </div>
                 </form>
@@ -218,6 +218,7 @@
         </div>
     </div>
 </div>
+
 
 
 @section scripts{

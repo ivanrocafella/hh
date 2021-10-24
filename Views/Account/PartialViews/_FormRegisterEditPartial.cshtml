@@ -1,0 +1,23 @@
+﻿@model AccountViewModel
+
+<input asp-for="Resume.AccountId" value="@Model.Id" hidden>
+<div asp-validation-summary="ModelOnly"></div>
+<div>
+    <select asp-for="Resume.CategoryName">
+        <option selected>@Model.Resume.CategoryName</option>
+        @foreach (var item in ViewBag.Categories)
+        {
+            <option value="@item.Name">@item.Name</option>
+        }
+    </select>
+</div>
+<div>
+    <label asp-for="Resume.Position"></label><br />
+    <input asp-for="Resume.Position" value="@Model.Resume.Position"/>
+    <span asp-validation-for="Resume.Position"></span>
+</div>
+<div>
+    <label asp-for="Resume.Salary"></label><br />
+    <input asp-for="Resume.Salary" value="@Model.Resume.Salary."/>
+    <span asp-validation-for="Resume.Salary"></span>
+</div>

@@ -47,6 +47,16 @@ namespace hh.Services
             return resumeView;  
         }
 
+        public async Task<Resume> ResumeForEdit(int id) => await _context.Resumes.FirstOrDefaultAsync(e => e.Id == id);
+
+        public async Task<List<Category>> GetCategories() => await _context.Categories.ToListAsync();
+
+        public async Task EditResume(Resume resume)
+        {
+            _context.Resumes.Update(resume);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task MakeJob(Job job)
         {
             await _context.Jobs.AddAsync(job);

@@ -59,8 +59,9 @@ namespace hh.ViewModels
         [Required(ErrorMessage = "Укажите telegram")]
         [RegularExpression(@"^@\w*", ErrorMessage = "Логин telegram должен начинаться с @")]
         public string Telegram { get; set; }
-
+        public List<Vacancy> Vacancies { get; set; }
         public List<Resume> Resumes { get; set; }
+        public Vacancy Vacancy { get; set; }
         public Resume Resume { get; set; }
     }
 }

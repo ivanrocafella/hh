@@ -14,6 +14,7 @@ namespace hh.Models
         public DbSet<Resume> Resumes { get; set; }
         public DbSet<Job> Jobs { get; set; }
         public DbSet<Education> Educations { get; set; }
+        public DbSet<Vacancy> Vacancies { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
