@@ -117,6 +117,8 @@ namespace hh.Services
                 Password = account.PasswordHash,
                 PasswordConfirm = account.PasswordHash,
                 Resumes = await _context.Resumes.
+                Where(e => e.AccountId == account.Id).ToListAsync(),
+                Vacancies = await _context.Vacancies.
                 Where(e => e.AccountId == account.Id).ToListAsync()
             };
             return accountViewModel;

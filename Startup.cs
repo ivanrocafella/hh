@@ -39,6 +39,7 @@ namespace hh
             services.AddTransient<CategoriesService>();
             services.AddTransient<ResumesService>();
             services.AddTransient<HomeService>();
+            services.AddTransient<VacanciesService>();
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection))
                 .AddIdentity<Account, IdentityRole>(options =>

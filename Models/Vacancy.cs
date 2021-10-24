@@ -23,6 +23,16 @@ namespace hh.Models
         [Display(Name = "Требования")]
         public string Requires { get; set; }
 
+
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        [Display(Name = "Опыт от")]
+        public int ExpFrom { get; set; }
+
+
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        [Display(Name = "Опыт до")]
+        public int ExpBefore { get; set; }
+
         public string Email { get; set; }
         public string Telegram { get; set; }
         public string Phone { get; set; }

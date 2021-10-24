@@ -1,0 +1,31 @@
+﻿@model Vacancy
+
+@{
+    ViewBag.Title = "Вакансия";
+}
+
+<h1>@ViewBag.Title</h1>
+<div class="card text-center mt-1 mb-1">
+    <div class="card-header">
+        #id: @Model.Id
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Позиция: @Model.Position</h5>
+        <h5 class="card-title">Категория: @Model.CategoryName</h5>
+        <p class="card-text">Зарплата: @Model.Salary</p>
+        <p class="card-text">Опыт: От @Model.ExpFrom До @Model.ExpBefore</p>
+        <p class="card-text">Требования: @Model.Requires</p>
+        <p class="card-text">Email работодателя: <a href="http://mailto:@Model.Account.Email">@Model.Account.Email</a></p>
+        <p class="card-text">Telegram работодателя: <a href="http://t.me/@Model.Account.Telegram.Substring(1)">@Model.Account.Telegram</a></p>
+        <p class="card-text">Номер телефона работодателя: @Model.Account.PhoneNumber</p>
+    </div>
+    @if (Model.DateTimeUpdate > DateTime.MinValue)
+    {
+        <div class="card-footer text-muted">
+            Дата обновления: @Model.DateTimeUpdate
+        </div>
+    }
+    <div class="card-footer text-muted">
+        Дата создания: @Model.DateTimeCreate
+    </div>
+</div>

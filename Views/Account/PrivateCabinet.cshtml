@@ -3,6 +3,7 @@
 @{
     ViewBag.Title1 = "Личный кабинет";
     ViewBag.Title2 = "Ваши резюме";
+    ViewBag.Title3 = "Ваши вакансии";
 }
 
 <h1>@ViewBag.Title1</h1>
@@ -24,47 +25,8 @@
         <p class="card-text">Номер телефона: @Model.Phone</p>
         <p class="card-text">Telegram: <a href="http://t.me/@Model.Telegram.Substring(1)">@Model.Telegram</a></p>
     </div>
+    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#accountViewModal">Редактировать профиль</button>
 </div>
-
-<h1>@ViewBag.Title2</h1>
-
-<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#make_resume">Добавить резюме</button>
-<div class="resumes_section">
-    @if (Model.Resumes.Count == 0)
-    {
-        <p>Резюме ещё нет</p>
-    }
-    else
-    {
-        foreach (var item in Model.Resumes)
-        {
-            <a style="display:block" asp-controller="Resume" asp-action="Detail" asp-route-id="@item.Id">
-                <div class="card text-center mt-1 mb-1">
-                    <div class="card-header">
-                        #id: @item.Id
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Position в @item.CategoryName</h5>
-                    </div>
-                    @if (item.DateTimeUpdate > DateTime.MinValue)
-                    {
-                        <div class="card-footer text-muted">
-                            Дата обновления: @item.DateTimeUpdate
-                        </div>
-                    }
-                    <div class="card-footer text-muted">
-                        Дата создания: @item.DateTimeCreate
-                    </div>
-                </div>
-            </a>
-            <a role="button" class="btn btn-success" asp-action="Edit" asp-controller="Resume" asp-route-id="@item.Id">Редактировать</a>
-            <a role="button" class="btn btn-success" asp-action="Update" asp-controller="Resume" asp-route-id="@item.Id">Обновить</a>
-            <a role="button" class="btn btn-success" asp-action="Set" asp-controller="Resume" asp-route-id="@item.Id">Опубликовать</a>
-            <a role="button" class="btn btn-success" asp-action="SetOff" asp-controller="Resume" asp-route-id="@item.Id">Снять с публикации</a>
-        }
-    }
-</div>
-
 
 
 <div class="modal fade" id="accountViewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -176,61 +138,203 @@
     </div>
 </div>
 
+@if (Model.Role == "Соискатель")
+{
+    <h1>@ViewBag.Title2</h1>
 
-<div class="modal fade" id="make_resume" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Форма добавления резюме</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form asp-controller="Resume" asp-action="Add" id="add_form" method="post">
-                    <input asp-for="Resume.AccountId" value="@Model.Id" hidden>
-                    <div asp-validation-summary="ModelOnly"></div>
-                    <div>
-                        <select asp-for="Resume.CategoryName">
-                            <option selected>Выберите категорию</option>
-                            @foreach (var item in ViewBag.Categories)
-                            {
-                                <option value="@item.Name">@item.Name</option>
-                            }
-                        </select>
+    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#make_resume">Добавить резюме</button>
+    <div class="resumes_section">
+        @if (Model.Resumes.Count == 0)
+        {
+            <p>Резюме ещё нет</p>
+        }
+        else
+        {
+            foreach (var item in Model.Resumes)
+            {
+                <a style="display:block" asp-controller="Resume" asp-action="Detail" asp-route-id="@item.Id">
+                    <div class="card text-center mt-1 mb-1">
+                        <div class="card-header">
+                            #id: @item.Id
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Position в @item.CategoryName</h5>
+                        </div>
+                        @if (item.DateTimeUpdate > DateTime.MinValue)
+                        {
+                            <div class="card-footer text-muted">
+                                Дата обновления: @item.DateTimeUpdate
+                            </div>
+                        }
+                        <div class="card-footer text-muted">
+                            Дата создания: @item.DateTimeCreate
+                        </div>
                     </div>
-                    <div>
-                        <label asp-for="Resume.Position"></label><br />
-                        <input asp-for="Resume.Position" />
-                        <span asp-validation-for="Resume.Position"></span>
-                    </div>
-                    <div>
-                        <label asp-for="Resume.Salary"></label><br />
-                        <input asp-for="Resume.Salary"/>
-                        <span asp-validation-for="Resume.Salary"></span>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" form="add_form" class="btn btn-success">Добавить и закрыть</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </a>
+                <a role="button" class="btn btn-success" asp-action="Edit" asp-controller="Resume" asp-route-id="@item.Id">Редактировать</a>
+                <a role="button" class="btn btn-success" asp-action="Update" asp-controller="Resume" asp-route-id="@item.Id">Обновить</a>
+                <a role="button" class="btn btn-success" asp-action="Set" asp-controller="Resume" asp-route-id="@item.Id">Опубликовать</a>
+                <a role="button" class="btn btn-success" asp-action="SetOff" asp-controller="Resume" asp-route-id="@item.Id">Снять с публикации</a>
+            }
+        }
+    </div>
+
+    <div class="modal fade" id="make_resume" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Форма добавления резюме</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form asp-controller="Resume" asp-action="Add" id="add_resume_form" method="post">
+                        <input asp-for="Resume.AccountId" value="@Model.Id" hidden>
+                        <div asp-validation-summary="ModelOnly"></div>
+                        <div>
+                            <select asp-for="Resume.CategoryName">
+                                <option selected>Выберите категорию</option>
+                                @foreach (var item in ViewBag.Categories)
+                                {
+                                    <option value="@item.Name">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label asp-for="Resume.Position"></label><br />
+                            <input asp-for="Resume.Position" />
+                            <span asp-validation-for="Resume.Position"></span>
+                        </div>
+                        <div>
+                            <label asp-for="Resume.Salary"></label><br />
+                            <input asp-for="Resume.Salary" />
+                            <span asp-validation-for="Resume.Salary"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="add_resume_form" class="btn btn-success">Добавить и закрыть</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
+else if (Model.Role == "Компания")
+{
+    <h1>@ViewBag.Title3</h1>
+
+    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#make_vacancy">Добавить вакансию</button>
+    <div class="resumes_section">
+        @if (Model.Vacancies.Count == 0)
+        {
+            <p>Вакансий ещё нет</p>
+        }
+        else
+        {
+            foreach (var item in Model.Vacancies)
+            {
+                <a style="display:block" asp-controller="Vacancy" asp-action="Detail" asp-route-id="@item.Id">
+                    <div class="card text-center mt-1 mb-1">
+                        <div class="card-header">
+                            #id: @item.Id
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Position в @item.CategoryName</h5>
+                        </div>
+                        @if (item.DateTimeUpdate > DateTime.MinValue)
+                        {
+                            <div class="card-footer text-muted">
+                                Дата обновления: @item.DateTimeUpdate
+                            </div>
+                        }
+                        <div class="card-footer text-muted">
+                            Дата создания: @item.DateTimeCreate
+                        </div>
+                    </div>
+                </a>
+                <a role="button" class="btn btn-success" asp-action="Edit" asp-controller="Vacancy" asp-route-id="@item.Id">Редактировать</a>
+                <a role="button" class="btn btn-success" asp-action="Update" asp-controller="Vacancy" asp-route-id="@item.Id">Обновить</a>
+                <a role="button" class="btn btn-success" asp-action="Set" asp-controller="Vacancy" asp-route-id="@item.Id">Опубликовать</a>
+                <a role="button" class="btn btn-success" asp-action="SetOff" asp-controller="Vacancy" asp-route-id="@item.Id">Снять с публикации</a>
+            }
+        }
+    </div>
+
+    <div class="modal fade" id="make_vacancy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Форма добавления вакансии</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form asp-controller="Vacancy" asp-action="Add" id="add_vacancy_form" method="post">
+                        <input asp-for="Vacancy.AccountId" value="@Model.Id" hidden>
+                        <div asp-validation-summary="ModelOnly"></div>
+                        <div>
+                            <select asp-for="Vacancy.CategoryName">
+                                <option selected>Выберите категорию</option>
+                                @foreach (var item in ViewBag.Categories)
+                                {
+                                    <option value="@item.Name">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <label asp-for="Vacancy.Position"></label><br />
+                            <input asp-for="Vacancy.Position" />
+                            <span asp-validation-for="Vacancy.Position"></span>
+                        </div>
+                        <div>
+                            <label asp-for="Vacancy.Salary"></label><br />
+                            <input asp-for="Vacancy.Salary" />
+                            <span asp-validation-for="Vacancy.Salary"></span>
+                        </div>
+                        <div>
+                            <label asp-for="Vacancy.ExpFrom"></label><br />
+                            <input asp-for="Vacancy.ExpFrom" />
+                            <span asp-validation-for="Vacancy.ExpFrom"></span>
+                        </div>
+                        <div>
+                            <label asp-for="Vacancy.ExpBefore"></label><br />
+                            <input asp-for="Vacancy.ExpBefore" />
+                            <span asp-validation-for="Vacancy.ExpBefore"></span>
+                        </div>
+                        <div>
+                            <label asp-for="Vacancy.Requires"></label><br />
+                            <textarea asp-for="Vacancy.Requires" cols="30" rows="2"></textarea>
+                            <span asp-validation-for="Vacancy.Requires"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="add_vacancy_form" class="btn btn-success">Добавить и закрыть</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
 
 
 
 @section scripts{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 
-<script>
-    function ChangeLabelRB1() {
-        $('label.name').text('Имя')
-    }
-    function ChangeLabelRB2() {
-        $('label.name').text('Имя комании')
+    <script>
+        function ChangeLabelRB1() {
+            $('label.name').text('Имя')
         }
-</script>
+        function ChangeLabelRB2() {
+            $('label.name').text('Имя комании')
+        }
+    </script>
 
 }
