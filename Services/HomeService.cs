@@ -1,4 +1,5 @@
 ﻿using hh.Models;
+using hh.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,21 @@ namespace hh.Services
             _context = context;
         }
 
-        public async Task<List<Resume>> GetAll() => await _context.Resumes.Where(e => e.Set == true)
-            .OrderByDescending(e => e.DateTimeUpdate).ToListAsync();
+        public async Task<ResumeVacancyViewModel> GetAll()
+        {
+            List<Resume> resumes = await _context.Resumes.Where(e => e.Set == true)
+                 .OrderByDescending(e => e.DateTimeUpdate).ToListAsync();
+            List<Vacancy> vacancies = await _context.Vacancies.Where(e => e.Set == true)
+                  .OrderByDescending(e => e.DateTimeUpdate).ToListAsync();
+            ResumeVacancyViewModel resumeVacancy = new ResumeVacancyViewModel
+            {
+                Resumes = resumes,
+                Vacancies = vacancies
+            };
+            return resumeVacancy;
+        }
+            
+            
+
     }
 }

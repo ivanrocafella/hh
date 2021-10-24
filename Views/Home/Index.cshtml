@@ -1,18 +1,19 @@
-﻿@model List<Resume>
+﻿@model ResumeVacancyViewModel
 
 @{ 
     ViewBag.Title1 = "Список резюме";
+    ViewBag.Title2 = "Список вакансий";
 }
 
 <div class="resumes_section">
-    <h1>@ViewBag.Title</h1>
-    @if (Model.Count == 0)
+    <h1>@ViewBag.Title1</h1>
+    @if (Model.Resumes.Count == 0)
     {
         <p>Нет опубликованных резюме</p>
     }
     else
     {
-        foreach (var item in Model)
+        foreach (var item in Model.Resumes)
         {
           <div class="card text-center mt-1 mb-1">
               <div class="card-header">
@@ -31,6 +32,37 @@
                   Дата создания: @item.DateTimeCreate
               </div>
           </div>
+        }
+    }
+</div>
+
+<div class="resumes_section">
+    <h1>@ViewBag.Title2</h1>
+    @if (Model.Vacancies.Count == 0)
+    {
+        <p>Нет опубликованных вакансий</p>
+    }
+    else
+    {
+        foreach (var item in Model.Vacancies)
+        {
+            <div class="card text-center mt-1 mb-1">
+                <div class="card-header">
+                    #id: @item.Id
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@item.Position в @item.CategoryName</h5>
+                </div>
+                @if (item.DateTimeUpdate > DateTime.MinValue)
+                {
+                    <div class="card-footer text-muted">
+                        Дата обновления: @item.DateTimeUpdate
+                    </div>
+                }
+                <div class="card-footer text-muted">
+                    Дата создания: @item.DateTimeCreate
+                </div>
+            </div>
         }
     }
 </div>
