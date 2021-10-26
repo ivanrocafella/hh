@@ -17,12 +17,14 @@ namespace hh.Controllers
         private readonly IAccountService<Account, IFormFile,
            LoginViewModel, Microsoft.AspNetCore.Identity.SignInResult,
            AccountViewModel, RegisterViewModel> _Aservice;
+        private ApplicationContext _context;
 
         public VacancyController(VacanciesService Vservice, IAccountService<Account, IFormFile, LoginViewModel,
-                Microsoft.AspNetCore.Identity.SignInResult, AccountViewModel, RegisterViewModel> Aservice)
+                Microsoft.AspNetCore.Identity.SignInResult, AccountViewModel, RegisterViewModel> Aservice, ApplicationContext context)
         {
             _Vservice = Vservice;
             _Aservice = Aservice;
+            _context = context;
         }
 
         [HttpPost]
@@ -76,6 +78,12 @@ namespace hh.Controllers
         {
             await _Vservice.SetOff(id);
             return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<JsonResult> AllVacancies(int curPage, int itemsPerPage)
+        {
+            VacancyPageViewModel vacancyPage = await _Vservice.AllVacancies(curPage, itemsPerPage);
+            return Json(new { vacancyPage });
         }
     }
 }

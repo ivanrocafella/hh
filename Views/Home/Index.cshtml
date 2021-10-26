@@ -1,83 +1,200 @@
 ﻿@model ResumeVacancyViewModel
 
-@{ 
+@{
     ViewBag.Title1 = "Список резюме";
     ViewBag.Title2 = "Список вакансий";
 }
 
 @if (User.IsInRole("Соискатель") && ViewBag.BoolSet)
 {
-<div class="resumes_section">
-    <h1>@ViewBag.Title1</h1>
-    @if (Model.Resumes.Count == 0)
-    {
-        <p>Нет опубликованных резюме</p>
-    }
-    else
-    {
-        foreach (var item in Model.Resumes)
+    <div class="resumes_section">
+        <h1>@ViewBag.Title1</h1>
+        @if (Model.Resumes.Count == 0)
         {
-            <div class="card text-center mt-1 mb-1">
-                <div class="card-header">
-                    #id: @item.Id
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">@item.Position в @item.CategoryName</h5>
-                </div>
-                @if (item.DateTimeUpdate > DateTime.MinValue)
-                {
-                    <div class="card-footer text-muted">
-                        Дата обновления: @item.DateTimeUpdate
-                    </div>
-                }
-                <div class="card-footer text-muted">
-                    Дата создания: @item.DateTimeCreate
-                </div>
-            </div>
+            <p>Нет опубликованных резюме</p>
         }
-    }
-</div>
+        else
+        {
+            foreach (var item in Model.Resumes)
+            {
+                <div class="card text-center mt-1 mb-1">
+                    <div class="card-header">
+                        #id: @item.Id
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Position в @item.CategoryName</h5>
+                    </div>
+                    @if (item.DateTimeUpdate > DateTime.MinValue)
+                    {
+                        <div class="card-footer text-muted">
+                            Дата обновления: @item.DateTimeUpdate
+                        </div>
+                    }
+                    <div class="card-footer text-muted">
+                        Дата создания: @item.DateTimeCreate
+                    </div>
+                </div>
+            }
+        }
+    </div>
 }
 
 
 @if (User.IsInRole("Соискатель") && ViewBag.Bool)
-{
-<div class="resumes_section">
-    <h1>@ViewBag.Title2</h1>
-    @if (Model.Vacancies.Count == 0)
-    {
-        <p>Нет опубликованных вакансий</p>
-    }
-    else
-    {
-        foreach (var item in Model.Vacancies)
+{ <h1>@ViewBag.Title2</h1>
+    <div class="vacancies_section">      
+        @if (Model.Vacancies.Count == 0)
         {
-            <div class="card text-center mt-1 mb-1">
-                <div class="card-header">
-                    #id: @item.Id
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">@item.Position в @item.CategoryName</h5>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Зарплата: @item.Salary USD</h5>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">
-                    <a asp-controller="Account" asp-action="PageCompany"
-                    asp-route-id="@item.AccountId">Ссылка на профиль компании</a></h5>
-                </div>
-                @if (item.DateTimeUpdate > DateTime.MinValue)
-                {
-                    <div class="card-footer text-muted">
-                        Дата обновления: @item.DateTimeUpdate
-                    </div>
-                }
-                <div class="card-footer text-muted">
-                    Дата создания: @item.DateTimeCreate
-                </div>
-            </div>
+            <p>Нет опубликованных вакансий</p>
         }
-    }
-</div>
+        else
+        {
+            foreach (var item in Model.Vacancies)
+            {
+                <div class="card text-center mt-1 mb-1">
+                    <div class="card-header">
+                        #id: @item.Id
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Position в @item.CategoryName</h5>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Зарплата: @item.Salary USD</h5>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a asp-controller="Account" asp-action="PageCompany"
+                               asp-route-id="@item.AccountId">Ссылка на профиль компании</a>
+                        </h5>
+                    </div>
+                    @if (item.DateTimeUpdate > DateTime.MinValue)
+                    {
+                        <div class="card-footer text-muted">
+                            Дата обновления: @item.DateTimeUpdate
+                        </div>
+                    }
+                    <div class="card-footer text-muted">
+                        Дата создания: @item.DateTimeCreate
+                    </div>
+                </div>
+            }
+        }
+    </div>
 }
+
+
+<hr>
+
+<div class="paging"></div>
+
+<hr>
+
+
+
+
+@section scripts{
+    <script>
+
+
+        $(function () { getVacancies(1) });
+
+        let maxPage;
+        let itemsPerPage = 5;
+
+
+        let getVacancies = function (curPage) {
+            $.get('@Url.Action("AllVacancies", "Vacancy")',
+                {
+                    'curPage': curPage,
+                    'itemsPerPage': itemsPerPage
+                },
+                function (response) {
+                    console.log(response.vacancyPage);
+                    createPagingButtons(response.vacancyPage.maxPage)
+                    $('.page_' + response.vacancyPage.curPage).attr('class', 'page-item active')
+                    fillVacancies(response.vacancyPage.vacancies)
+            })
+        }
+
+        let fillVacancies = function (vacancies) {
+            $('.vacancies_section').empty()
+            for (let i = 0; i < vacancies.length; i++) {
+                let id = 'comment_' + (i + 1)
+                $('.vacancies_section').append(htmlVacancy);
+                $('.vacancies_section .card').last().attr('id', id)
+                $('#' + id + ' .ext_id').text('#id-' + vacancies[i].id)
+                $('#' + id + ' .ext_position').text(vacancies[i].position)
+                $('#' + id + ' .ext_category').text(vacancies[i].categoryName)
+                $('#' + id + ' .ext_salary').text("Зарплата: " + vacancies[i].salary + ' USD')
+                $('#' + id + ' .ext_accountId').attr(
+                    'href', 'https://localhost:44340/Account/PageCompany/' + vacancies[i].accountId +'')
+                if (new Date(vacancies[i].dateTimeUpdate) > new Date('0001-01-01T00:00:00')) {
+                    $('#' + id + ' .ext_datetimeUpdate').text("Дата обновления: " + vacancies[i].dateTimeUpdate)
+                } else {
+                    $('#' + id + ' .dateUpdate').remove()
+                }
+                $('#' + id + ' .ext_datetimeCreate').text("Дата создания: " + vacancies[i].dateTimeCreate)
+                
+            }
+           
+        };
+
+
+        let pagination = '<nav">' +
+            '<ul class="pagination" >' +
+            '   <li class="page-item disabled">' +
+            '      <span class="page-link" tabindex="-1" aria-disabled="true">Previous</span>' +
+            ' </li>' +
+            '<li class="next page-item">' +
+            '   <span class="page-link" >Next</span>' +
+            '</li>' +
+            '</ul >' +
+            '</nav >';
+
+        let createPagingButtons = function (maxPage) {
+            $('.paging').empty()
+            if (maxPage > 1) {
+                let button = ''
+                for (let i = 1; i <= maxPage; i++) {
+                    button += '<li class="page_' + i + ' page-item"><span class="page-link" onClick="switchPage(' + i + ')">' + i + '</span></li>'
+                }
+                $('.paging').append(pagination)
+                $('.next').before(button)
+            }
+        }
+
+        let switchPage = function (num) {
+            getVacancies(num);
+        }
+
+        let htmlVacancy = '<div class="card text-center mt-1 mb-1">' +
+                    '<div class="card-header">' +
+                        '<h5 class="ext_id"></h5>' +
+                    '</div>' +
+                    '<div class="card-body">' +
+                     '<span class="card-title">' +
+                        '<h5 class="ext_position"></h5>' + 'в' +
+                        '<h5 class="ext_category"></h5>' +
+                    '</span>' +
+                    '</div>' +
+                    '<div class="card-body">' +
+                        '<h5 class="ext_salary"></h5>' +
+                    '</div>' +
+                    '<div class="card-body">' +
+                        '<h5 class="card-title">' +
+                            '<a class="ext_accountId" asp-controller="Account" asp-action="PageCompany"' +
+                               'asp-route-id="">Ссылка на профиль компании</a>' +
+                        '</h5>' +
+                    '</div>' +
+                        '<div class="card-footer text-muted dateUpdate">' +
+                        '<h5 class="ext_datetimeUpdate"></h5>' +
+                        '</div>' +
+                        '<div class="card-footer text-muted">' +
+                        '<h5 class="ext_datetimeCreate"></h5>' +
+                    '</div>' +
+                '</div>'
+
+        
+
+    </script> 
+ }

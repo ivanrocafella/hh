@@ -1,4 +1,5 @@
 ﻿using hh.Models;
+using hh.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -71,5 +72,25 @@ namespace hh.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<VacancyPageViewModel> AllVacancies(int curPage, int itemsPerPage)
+        {
+            List<Vacancy> vacancies = await _context.Vacancies.OrderByDescending(e => e.DateTimeUpdate)
+                  .Where(e => e.Set == true).ToListAsync();
+            var maxPage = (int)Math.Ceiling((double)vacancies.Count / itemsPerPage);
+            List<Vacancy> page = new List<Vacancy>();
+            if (curPage == 1)
+                page = vacancies.Take(itemsPerPage).ToList();
+            else if (curPage > 1 && curPage < maxPage)
+                page = vacancies.Skip((curPage - 1) * itemsPerPage).Take(itemsPerPage).ToList();
+            else
+                page = vacancies.Skip((curPage - 1) * itemsPerPage).Take(vacancies.Count - ((curPage - 1) * itemsPerPage)).ToList();
+            VacancyPageViewModel vacancyPage = new VacancyPageViewModel
+            {
+                Vacancies = page,
+                CurPage = curPage,
+                MaxPage = maxPage
+            };
+            return vacancyPage;
+        }
     }
 }

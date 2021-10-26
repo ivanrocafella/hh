@@ -33,12 +33,18 @@ namespace hh.Controllers
         public async Task<IActionResult> Index()
         {
             Account account = await _userManager.GetUserAsync(HttpContext.User);
-            List<Resume> resumes = await _context.Resumes.Where(e => e.Set == true && e.AccountId == account.Id)
-               .OrderByDescending(e => e.DateTimeUpdate).ToListAsync();
+            List<Resume> resumes = new List<Resume>();
+            Account AccountFromContext = new Account();
+            if (account != null)
+            {
+                resumes = await _context.Resumes.Where(e => e.Set == true && e.AccountId == account.Id)
+                               .OrderByDescending(e => e.DateTimeUpdate).ToListAsync();               
+                AccountFromContext = await _context.Accounts.Include(e => e.Resumes)
+                              .FirstOrDefaultAsync(e => e.Id == account.Id);
+            }
             List<Vacancy> vacancies = await _context.Vacancies.Where(e => e.Set == true)
                   .OrderByDescending(e => e.DateTimeUpdate).ToListAsync();
-            Account AccountFromContext = await _context.Accounts.Include(e => e.Resumes)
-                              .FirstOrDefaultAsync(e => e.Id == account.Id);
+            
             ResumeVacancyViewModel resumeVacancy = new ResumeVacancyViewModel
             {
                 Resumes = resumes,

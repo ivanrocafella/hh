@@ -86,7 +86,7 @@ namespace hh.Services
                 }
             }
             else
-                pathImage = "/files/default.png";
+                pathImage = "/Default.png";
             Account account = new Account
             {
                 Email = registerView.Email,
